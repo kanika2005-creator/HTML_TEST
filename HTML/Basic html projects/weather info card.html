@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Weather Card</title>
+    <style>
+        body {
+            font-family: Inter, Arial;
+            background: linear-gradient(180deg, #eaf2ff, #fff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0
+        }
+        
+        .card {
+            width: 340px;
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(8, 20, 50, 0.08)
+        }
+        
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+        
+        .city {
+            font-weight: 700
+        }
+        
+        .search {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px
+        }
+        
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #eef2fb
+        }
+        
+        button {
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #2b8df6;
+            color: #fff;
+            border: 0
+        }
+        
+        .weather {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px
+        }
+        
+        .icon {
+            font-size: 54px
+        }
+        
+        .temp {
+            font-size: 36px;
+            font-weight: 800
+        }
+        
+        .desc {
+            color: #666
+        }
+        
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            color: #555
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="top">
+            <div>
+                <div class="city" id="cityName">New Delhi</div>
+                <div style="font-size:13px;color:#666" id="dateStr"></div>
+            </div>
+            <div style="font-size:12px;color:#999">Weather Demo</div>
+        </div>
+
+        <div class="search">
+            <input id="cityInput" placeholder="Enter city (e.g., Mumbai)" />
+            <button onclick="getWeather()">Go</button>
+        </div>
+
+        <div class="weather" id="weatherWrap">
+            <div class="icon" id="icon">☀</div>
+            <div>
+                <div class="temp" id="temp">28°C</div>
+                <div class="desc" id="desc">Sunny • Humidity 50%</div>
+            </div>
+        </div>
+
+        <div class="meta">
+            <div>Wind: <span id="wind">5 km/h</span></div>
+            <div>Feels: <span id="feels">30°C</span></div>
+        </div>
+    </div>
+
+    <script>
+        const samples = {
+            "mumbai": {
+                temp: 31,
+                desc: "Partly cloudy",
+                icon: "⛅",
+                wind: "12 km/h",
+                feels: 33
+            },
+            "delhi": {
+                temp: 28,
+                desc: "Sunny",
+                icon: "☀",
+                wind: "6 km/h",
+                feels: 30
+            },
+            "bangalore": {
+                temp: 22,
+                desc: "Light rain",
+                icon: "🌧",
+                wind: "8 km/h",
+                feels: 22
+            },
+            "kolkata": {
+                temp: 30,
+                desc: "Humid",
+                icon: "🌤",
+                wind: "10 km/h",
+                feels: 32
+            }
+        };
+
+        function formatDate(d) {
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            return $ {
+                days[d.getDay()]
+            }
+            $ {
+                d.getDate()
+            }
+            $ {
+                d.toLocaleString('default', {
+                    month: 'short'
+                })
+            };
+        }
+
+        document.getElementById('dateStr').innerText = formatDate(new Date());
+
+        function show(data, city) {
+            document.getElementById('cityName').innerText = city;
+            document.getElementById('temp').innerText = data.temp + "°C";
+            document.getElementById('desc').innerText = data.desc + " • Humidity 60%";
+            document.getElementById('icon').innerText = data.icon;
+            document.getElementById('wind').innerText = data.wind;
+            document.getElementById('feels').innerText = data.feels + "°C";
+        }
+
+        function getWeather() {
+            const q = (document.getElementById('cityInput').value || 'New Delhi').trim().toLowerCase();
+            if (!q) return;
+            if (samples[q]) {
+                show(samples[q], capitalize(q));
+            } else {
+                // fallback: simple fake generation
+                const fake = {
+                    temp: (20 + Math.floor(Math.random() * 15)),
+                    desc: "Cloudy",
+                    icon: "☁",
+                    wind: (5 + Math.floor(Math.random() * 15)) + " km/h",
+                    feels: (24 + Math.floor(Math.random() * 10))
+                };
+                show(fake, capitalize(q));
+            }
+        }
+
+        function capitalize(s) {
+            return s.split(' ').map(a => a[0] ? .toUpperCase() + a.slice(1)).join(' ');
+        }
+
+        // initial
+        show(samples['delhi'], 'New Delhi');
+    </script>
+</body>
+
+</html>

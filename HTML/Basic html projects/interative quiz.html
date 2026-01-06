@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Interactive Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="quiz-container">
+        <div id="quiz-header">
+            <h1>General Knowledge Quiz</h1>
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <span id="question-counter">Question <span id="current-q">1</span> of <span id="total-q">5</span></span>
+        </div>
+
+        <div id="quiz-content">
+            <!-- Questions will be dynamically loaded here -->
+        </div>
+
+        <div id="quiz-controls">
+            <button id="prev-btn" class="btn">Previous</button>
+            <button id="next-btn" class="btn btn-primary">Next</button>
+            <button id="submit-btn" class="btn btn-success" style="display:none;">Submit Quiz</button>
+        </div>
+
+        <div id="result" class="result-hidden">
+            <h2>Your Score: <span id="final-score"></span></h2>
+            <p id="result-message"></p>
+            <button id="restart-btn" class="btn btn-primary">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Product Page — Shop</title>
+    <style>
+         :root {
+            --accent: #ff6b6b;
+            --muted: #6b6f76
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        body {
+            font-family: Inter, system-ui, Arial;
+            margin: 0;
+            background: #f5f7fb;
+            color: #222
+        }
+        
+        header {
+            background: linear-gradient(90deg, #ffd1d1, #ffefef);
+            padding: 22px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04)
+        }
+        
+        .wrap {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 0 18px
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(15, 20, 30, 0.06);
+            transition: transform .18s
+        }
+        
+        .card:hover {
+            transform: translateY(-6px)
+        }
+        
+        .thumb {
+            height: 160px;
+            background-size: cover;
+            background-position: center
+        }
+        
+        .info {
+            padding: 12px
+        }
+        
+        .title {
+            font-weight: 600;
+            margin: 0 0 8px;
+            font-size: 15px
+        }
+        
+        .price {
+            color: var(--accent);
+            font-weight: 700
+        }
+        
+        .meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px
+        }
+        
+        .side {
+            position: relative;
+            background: #fff;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(15, 20, 30, 0.06)
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600
+        }
+        
+        .cart-list {
+            margin-top: 12px
+        }
+        
+        .cart-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee
+        }
+        
+        .small-thumb {
+            width: 56px;
+            height: 44px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            flex: 0 0 56px
+        }
+        
+        .qty {
+            background: #f3f4f6;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-weight: 600
+        }
+        
+        .empty {
+            color: var(--muted);
+            text-align: center;
+            padding: 18px
+        }
+        
+        @media(max-width:880px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .side {
+                margin-top: 18px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 style="margin:0">Shop — Best Picks</h1>
+        <p style="margin:.4rem 0 0;color:#444">Modern product cards — perfect for practice</p>
+    </header>
+
+    <main class="wrap">
+        <div class="grid">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:14px">
+                    <h2 style="margin:0">Featured Products</h2>
+                    <div style="color:#666">Showing 6 items</div>
+                </div>
+
+                <div class="gallery" id="productGrid">
+                    <!-- product cards inserted by JS -->
+                </div>
+            </div>
+
+            <aside class="side">
+                <h3 style="margin:0 0 8px">Cart</h3>
+                <div id="cart" class="cart-list">
+                    <div class="empty">Your cart is empty</div>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:8px;align-items:center;justify-content:space-between">
+                    <div style="color:#666">Total:</div>
+                    <div id="total" style="font-weight:800">₹0</div>
+                </div>
+                <button class="btn" style="width:100%;margin-top:12px" onclick="checkout()">Checkout</button>
+            </aside>
+        </div>
+    </main>
+
+    <script>
+        const products = [{
+            id: 1,
+            title: "Casual Sneakers",
+            price: 1299,
+            img: "images/sneakers.jpg"
+        }, {
+            id: 2,
+            title: "Smart Watch",
+            price: 2499,
+            img: "images/smart watchs.jpg"
+        }, {
+            id: 3,
+            title: "Backpack",
+            price: 899,
+            img: "images/back pack.jpg"
+        }, {
+            id: 4,
+            title: "Headphones",
+            price: 1499,
+            img: "images/headphone.jpg"
+        }, {
+            id: 5,
+            title: "Sunglasses",
+            price: 599,
+            img: "images/sunglasees.jpg"
+        }, {
+            id: 6,
+            title: "Denim Jacket",
+            price: 1999,
+            img: "images/denium jacket.jpg"
+        }];
+
+        const cart = [];
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+      <div class="thumb" style="background-image:url('${p.img}')"></div>
+      <div class="info">
+        <div class="title">${p.title}</div>
+        <div class="price">₹${p.price}</div>
+        <div class="meta">Free shipping • 7 day returns</div>
+        <div style="margin-top:10px">
+          <button class="btn" onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>
+    `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCart() {
+            const el = document.getElementById('cart');
+            el.innerHTML = '';
+            if (cart.length === 0) {
+                el.innerHTML = '<div class="empty">Your cart is empty</div>';
+                document.getElementById('total').innerText = '₹0';
+                return;
+            }
+            let total = 0;
+            cart.forEach(item => {
+                total += item.qty * item.price;
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+      <div class="small-thumb" style="background-image:url('${item.img}')"></div>
+      <div style="flex:1">
+        <div style="font-weight:700">${item.title}</div>
+        <div style="font-size:13px;color:#666">₹${item.price} · <span class="qty">x${item.qty}</span></div>
+      </div>
+      <div style="text-align:right">
+        <button style="background:none;border:none;color:#ff6b6b;cursor:pointer" onclick="removeOne(${item.id})">Remove</button>
+      </div>
+    `;
+                el.appendChild(div);
+            });
+            document.getElementById('total').innerText = '₹' + total;
+        }
+
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            let it = cart.find(x => x.id === id);
+            if (it) it.qty++;
+            else cart.push({...p,
+                qty: 1
+            });
+            renderCart();
+        }
+
+        function removeOne(id) {
+            const idx = cart.findIndex(x => x.id === id);
+            if (idx >= 0) {
+                cart[idx].qty--;
+                if (cart[idx].qty <= 0) cart.splice(idx, 1);
+                renderCart();
+            }
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Cart is empty.");
+                return;
+            }
+            alert("Checkout demo — total: " + document.getElementById('total').innerText);
+            cart.length = 0;
+            renderCart();
+        }
+
+        renderProducts();
+        renderCart();
+    </script>
+</body>
+
+</html>

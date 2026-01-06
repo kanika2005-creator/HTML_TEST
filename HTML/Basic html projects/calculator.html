@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Calculator UI</title>
+    <style>
+         :root {
+            --bg: #7c8392;
+            --panel: #ffffff;
+            --accent: #4b79a1
+        }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0
+        }
+        
+        .calc {
+            background: var(--panel);
+            width: 320px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            padding: 16px
+        }
+        
+        .screen {
+            height: 72px;
+            background: #c8d9eb;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            font-size: 24px;
+            font-weight: 600;
+            color: #111
+        }
+        
+        .keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 12px
+        }
+        
+        button {
+            padding: 16px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer
+        }
+        
+        .num {
+            background: #fff;
+            box-shadow: 0 15px 18px rgba(15, 20, 30, 0.06)
+        }
+        
+        .op {
+            background: var(--accent);
+            color: #fff
+        }
+        
+        .wide {
+            grid-column: span 2
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calc">
+        <div id="screen" class="screen">0</div>
+        <div class="keys">
+            <button class="num" onclick="press('7')">7</button>
+            <button class="num" onclick="press('8')">8</button>
+            <button class="num" onclick="press('9')">9</button>
+            <button class="op" onclick="press('/')">÷</button>
+
+            <button class="num" onclick="press('4')">4</button>
+            <button class="num" onclick="press('5')">5</button>
+            <button class="num" onclick="press('6')">6</button>
+            <button class="op" onclick="press('*')">×</button>
+
+            <button class="num" onclick="press('1')">1</button>
+            <button class="num" onclick="press('2')">2</button>
+            <button class="num" onclick="press('3')">3</button>
+            <button class="op" onclick="press('-')">−</button>
+
+            <button class="num" onclick="press('0')">0</button>
+            <button class="num" onclick="press('.')">.</button>
+            <button class="op" onclick="calc()">=</button>
+            <button class="op" onclick="press('+')">+</button>
+
+            <button style="background:#ffdede;color:#900" onclick="allClear()">AC</button>
+            <button style="background:#fff" onclick="backspace()">⌫</button>
+            <button style="grid-column:span 2;background:#fff" onclick="toggleSign()">±</button>
+        </div>
+    </div>
+
+    <script>
+        let expr = "";
+        const screen = document.getElementById('screen');
+
+        function press(v) {
+            // prevent invalid starting operators
+            if (expr === "" && ['+', '*', '/'].includes(v)) return;
+            // avoid two operators
+            if (['+', '-', '', '/'].includes(v) && ['+', '-', '', '/'].includes(expr.slice(-1))) {
+                expr = expr.slice(0, -1) + v;
+            } else {
+                expr += v;
+            }
+            update();
+        }
+
+        function update() {
+            screen.innerText = expr || '0';
+        }
+
+        function calc() {
+            if (!expr) return;
+            try {
+                // replace × ÷ with * /
+                const safe = expr.replace(/×/g, '*').replace(/÷/g, '/');
+                // evaluate
+                const result = Function('"use strict";return (' + safe + ')')();
+                expr = String(Number.isFinite(result) ? Math.round(result * 1e12) / 1e12 : result);
+            } catch (e) {
+                expr = "Error";
+            }
+            update();
+        }
+
+        function allClear() {
+            expr = "";
+            update();
+        }
+
+        function backspace() {
+            expr = expr.slice(0, -1);
+            update();
+        }
+
+        function toggleSign() {
+            if (!expr) return;
+            try {
+                const val = Function('"use strict";return (' + expr + ')')();
+                expr = String(-val);
+                update();
+            } catch (e) {}
+        }
+    </script>
+</body>
+
+</html>
